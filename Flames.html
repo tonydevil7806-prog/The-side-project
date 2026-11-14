@@ -1,0 +1,306 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FLAMES — Anime Edition</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Orbitron:wght@600;800&display=swap');
+
+    :root {
+      --pink: #ff55b8;
+      --purple: #a970ff;
+      --cyan: #69eaff;
+      --ink: #17132f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 2rem 1rem;
+      display: grid;
+      place-items: center;
+      overflow-x: hidden;
+      color: white;
+      font-family: "Nunito", sans-serif;
+      background:
+        radial-gradient(ellipse at 15% 20%, #542b91 0, transparent 38%),
+        radial-gradient(ellipse at 85% 75%, #7e286e 0, transparent 40%),
+        linear-gradient(145deg, #100d27, #20123d 55%, #101329);
+    }
+
+    /* Decorative stars */
+    body::before {
+      content: "✦        ·       ✧          ·       ✦         ·     ✧";
+      position: fixed;
+      inset: 8% 0 auto;
+      color: #ffffff9c;
+      font-size: 1.5rem;
+      letter-spacing: 1.2rem;
+      text-align: center;
+      pointer-events: none;
+      text-shadow: 0 0 12px var(--cyan);
+    }
+
+    .card {
+      position: relative;
+      width: min(100%, 460px);
+      padding: 2.5rem;
+      overflow: hidden;
+      text-align: center;
+      border: 1px solid #ffffff35;
+      border-radius: 24px;
+      background: #17132fcc;
+      box-shadow:
+        0 0 35px #a970ff35,
+        0 20px 60px #0008;
+      backdrop-filter: blur(12px);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 15%;
+      width: 70%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--cyan), var(--pink), transparent);
+      box-shadow: 0 0 18px var(--pink);
+    }
+
+    .sparkle {
+      font-size: 2.5rem;
+      color: var(--cyan);
+      text-shadow: 0 0 18px var(--cyan);
+      animation: float 2.5s ease-in-out infinite;
+    }
+
+    h1 {
+      margin: 0.2rem 0;
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(2.5rem, 12vw, 4rem);
+      letter-spacing: 0.18em;
+      color: white;
+      text-shadow:
+        3px 3px 0 var(--pink),
+        0 0 24px #b45dff;
+    }
+
+    .subtitle {
+      margin: 0 0 1.8rem;
+      color: #d9d2f3;
+    }
+
+    .flames-letters {
+      display: flex;
+      justify-content: center;
+      gap: 0.55rem;
+      margin: 1.5rem 0;
+    }
+
+    .flames-letters span {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border: 1px solid #ffffff35;
+      border-radius: 12px;
+      background: #ffffff0c;
+      color: var(--cyan);
+      font-family: "Orbitron", sans-serif;
+      font-size: 0.9rem;
+      box-shadow: inset 0 0 12px #a970ff18;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.35rem;
+      color: #e3dcff;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border: 1px solid #ffffff36;
+      border-radius: 12px;
+      outline: none;
+      background: #0d0b1dcc;
+      color: white;
+      font: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input::placeholder {
+      color: #aaa2c3;
+    }
+
+    input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px #69eaff26, 0 0 16px #69eaff35;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 1.4rem;
+      padding: 1rem;
+      border: 0;
+      border-radius: 12px;
+      color: #211333;
+      background: linear-gradient(100deg, var(--cyan), #b7a0ff 55%, var(--pink));
+      font: 900 1rem "Nunito", sans-serif;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 0 0 22px #a970ff58;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px #ff55b87d;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    #result {
+      min-height: 70px;
+      margin-top: 1.4rem;
+      padding: 1rem;
+      border: 1px solid #ffffff20;
+      border-radius: 14px;
+      background: #ffffff09;
+      color: #e7defe;
+    }
+
+    #result.show {
+      border-color: #ff55b880;
+      color: white;
+      animation: pop 0.35s ease-out;
+    }
+
+    #result strong {
+      display: block;
+      margin-top: 0.2rem;
+      color: var(--pink);
+      font-family: "Orbitron", sans-serif;
+      font-size: 1.4rem;
+      text-shadow: 0 0 15px #ff55b878;
+    }
+
+    .note {
+      margin: 1rem 0 0;
+      color: #aaa2c3;
+      font-size: 0.8rem;
+    }
+
+    @keyframes float {
+      50% { transform: translateY(-7px) rotate(8deg); }
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.92); opacity: 0.4; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 420px) {
+      .card {
+        padding: 2rem 1.3rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="sparkle" aria-hidden="true">✦</div>
+    <h1>FLAMES</h1>
+    <p class="subtitle">A little name-game magic ✨</p>
+
+    <div class="flames-letters" aria-label="Friends, Love, Affection, Marriage, Enemies, Siblings">
+      <span>F</span><span>L</span><span>A</span>
+      <span>M</span><span>E</span><span>S</span>
+    </div>
+
+    <form id="flamesForm">
+      <label for="name1">Your name</label>
+      <input id="name1" type="text" placeholder="Enter a name" autocomplete="off" required>
+
+      <label for="name2">Their name</label>
+      <input id="name2" type="text" placeholder="Enter another name" autocomplete="off" required>
+
+      <button type="submit">Reveal the result ✨</button>
+    </form>
+
+    <div id="result" aria-live="polite">Your result will appear here...</div>
+    <p class="note">Just for fun — not an actual prediction.</p>
+  </main>
+
+  <script>
+    const meanings = {
+      F: "Friends",
+      L: "Love",
+      A: "Affection",
+      M: "Marriage",
+      E: "Enemies",
+      S: "Siblings"
+    };
+
+    function getFlamesResult(name1, name2) {
+      const first = name1.toLowerCase().replace(/[^a-z]/g, "").split("");
+      const second = name2.toLowerCase().replace(/[^a-z]/g, "").split("");
+
+      // Cross out matching letters, one occurrence at a time.
+      for (let i = first.length - 1; i >= 0; i--) {
+        const matchIndex = second.indexOf(first[i]);
+
+        if (matchIndex !== -1) {
+          first.splice(i, 1);
+          second.splice(matchIndex, 1);
+        }
+      }
+
+      const count = first.length + second.length;
+      if (count === 0) return null;
+
+      const letters = ["F", "L", "A", "M", "E", "S"];
+      let index = 0;
+
+      while (letters.length > 1) {
+        index = (index + count - 1) % letters.length;
+        letters.splice(index, 1);
+      }
+
+      return meanings[letters[0]];
+    }
+
+    document.getElementById("flamesForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const name1 = document.getElementById("name1").value.trim();
+      const name2 = document.getElementById("name2").value.trim();
+      const resultBox = document.getElementById("result");
+      const outcome = getFlamesResult(name1, name2);
+
+      resultBox.classList.remove("show");
+
+      if (!outcome) {
+        resultBox.textContent = "No unmatched letters — try different names!";
+      } else {
+        resultBox.innerHTML = `Your FLAMES fate is...<strong>${outcome}!</strong>`;
+      }
+
+      resultBox.classList.add("show");
+    });
+  </script>
+</body>
+</html>
+```
